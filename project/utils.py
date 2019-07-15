@@ -46,32 +46,30 @@ def load_embeddings(embeddings_path):
     # Note that here you also need to know the dimension of the loaded embeddings.
     # When you load the embeddings, use numpy.float32 type as dtype
 
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
-
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
-
+    embeddings = {}
+    for line in open(embeddings_path, encoding='utf-8'):
+        word, *vec = line.strip().split('\t')
+        embeddings_dim = len(vec)
+        embeddings[word] = np.array(vec, dtype=np.float32)
+    return embeddings, embeddings_dim
 
 def question_to_vec(question, embeddings, dim):
     """Transforms a string to an embedding by averaging word embeddings."""
     
     # Hint: you have already implemented exactly this function in the 3rd assignment.
 
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
-
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
-
+    quest_rep = np.zeros(dim)
+    count = 0
+    
+    for word in question.split():
+      if word in  embeddings:
+        count +=1
+        quest_rep += embeddings[word]
+    
+    if count != 0:
+      quest_rep = quest_rep/count      
+      
+    return quest_rep
 
 def unpickle_file(filename):
     """Returns the result of unpickling the file content."""

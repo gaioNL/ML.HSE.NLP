@@ -86,6 +86,9 @@ def main():
     
     simple_manager = SimpleDialogueManager()
     bot = BotHandler(token, simple_manager)
+
+    #dialogue_manager = DialogueManager(RESOURCE_PATH)
+    #bot = BotHandler(token, dialogue_manager)
     
     ###############################################################
 
