@@ -2,7 +2,10 @@ import os
 from sklearn.metrics.pairwise import pairwise_distances_argmin
 
 from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
 from utils import *
+
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 class ThreadRanker(object):
@@ -12,7 +15,7 @@ class ThreadRanker(object):
 
     def __load_embeddings_by_tag(self, tag_name):
         embeddings_path = os.path.join(self.thread_embeddings_folder, tag_name + ".pkl")
-        thread_ids, thread_embeddings = unpickle_file(embeddings_path)
+        thread_ids, thread_embeddings = unpickle_file_joblib(embeddings_path)
         return thread_ids, thread_embeddings
 
     def get_best_thread(self, question, tag_name):
@@ -34,14 +37,16 @@ class DialogueManager(object):
         print("Loading resources...")
 
         # Intent recognition:
-        self.intent_recognizer = unpickle_file(paths['INTENT_RECOGNIZER'])
-        self.tfidf_vectorizer = unpickle_file(paths['TFIDF_VECTORIZER'])
+        self.intent_recognizer = unpickle_file_joblib(paths['INTENT_RECOGNIZER'])
+        self.tfidf_vectorizer = unpickle_file_joblib(paths['TFIDF_VECTORIZER'])
 
         self.ANSWER_TEMPLATE = 'I think its about %s\nThis thread might help you: https://stackoverflow.com/questions/%s'
 
         # Goal-oriented part:
-        self.tag_classifier = unpickle_file(paths['TAG_CLASSIFIER'])
+        self.tag_classifier = unpickle_file_joblib(paths['TAG_CLASSIFIER'])
         self.thread_ranker = ThreadRanker(paths)
+
+        self.create_chitchat_bot()
 
     def create_chitchat_bot(self):
         """Initializes self.chitchat_bot with some conversational model."""

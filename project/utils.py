@@ -1,5 +1,6 @@
 import nltk
 import pickle
+from sklearn.externals import joblib #mem issue on AWS
 import re
 import numpy as np
 
@@ -71,7 +72,13 @@ def question_to_vec(question, embeddings, dim):
       
     return quest_rep
 
+def unpickle_file_joblib(filename):
+    """Returns the result of unpickling the file content."""
+    with open(filename, 'rb') as f:
+        return joblib.load(f)
+
 def unpickle_file(filename):
     """Returns the result of unpickling the file content."""
     with open(filename, 'rb') as f:
         return pickle.load(f)
+
